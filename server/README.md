@@ -98,3 +98,30 @@ io.on('connection', socket => {
 `io.on()` lets you register and event listener. We can listen for a specific event and do something when that event happens. The most popular event is `connection`. This let's you listen for a new connection, meaning that a client connected to the server, and it lets you do something when that connection comes in. In order to do something, you provide a callback function as the second argument and this callback function is gonna get called with a `socket`. This `socket` argument is similar to the socket argument we have access to over index.js. This represents the individual socket, as opposed to all of the users connected to the server. 
 
 Web sockets are a persistent technology, meaning the client and server both keep the communication channel open for as long as both of them want to. If the server shuts down, the client doesn't really have a choice. And the same for the client-server relationship. If I close the browser tab, the server cannot force me to keep the connection open. When a connection drops, the client still gonna try to reconnect. When we restart the server using `nodemon` there's about 1/4 of a second of time where the server is down and the client notices that. It tries to reconnect and eventually it reconnects. On the client we can also do something when we successfully connect to the server. 
+
+The `io.on()` method is a very special event. Usually you will not be attaching anything to it. You're not gonna make calls to `io.on()` or `io.emit()` than the one we already have on server.js
+
+***
+
+The `emit` method can be used on both the client and the server to emit events. `emit` is really similar to the listeners, although instead of listening to an event, we are *creating* the event:
+
+```javascript
+socket.emit('newEmail', {
+  from: 'mike@example.com',
+  text: 'hey. what is going on.',
+  createdAt: 123
+});
+```
+
+The first argument is the name of the event you wanna emit. In this case we have to match it exactly as we specified over index.js and since this is not a listener, we're not gonna provide a callback. By default we don't have to specify anything as a second argument. Maybe we just wanna emit new e-mail without anything letting the browser know that something happened. <br>
+If you wanna send data, all you have to do is provide a second argument to emit. Usually an object is send, so you can specify anything you like. In this case we're specifying who the emails from, a text and a createdAt property. This data is gonna get sent along with the newEmail event from the server to the client.
+
+***
+
+"createEmail" is a custom event listener, so we need a listener. We probably gonna expect some data, the email to create, so we can name the variable `newEmail` in the callback function. Here we're just gonna log the email to make sure the event is properly going from client to server. Remember that we need to emit the event on the client.
+
+```javascript 
+socket.on('createEmail', newEmail => {
+  console.log('createEmail', newEmail);
+});
+```

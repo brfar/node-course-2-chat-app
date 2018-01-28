@@ -17,6 +17,10 @@ socket.on('connect', function () {
     to: 'jan@example.com',
     text: 'hey. this is andrew.'
   });
+  /** We're calling .emit here beucase we created a custom event listener on the server, so this is necessary. 
+   * We're calling it here inside the 'connect' callback function because we don't wanna emit the event until
+   * we are connected. The data we're gonna send on this emit, is the object on the second argument.
+   */
 });
 
 socket.on('disconnect', function () {
@@ -25,5 +29,15 @@ socket.on('disconnect', function () {
 });
 
 socket.on('newEmail', function (email) {
+  /** This is a custom event, so instead of using one of the built-in events, we're using "newEmail" which was created by us.
+   * Having the listener for "newEmail" we need to "emit" this event over inside of server.js
+   * On the "emit" method on server, whatever we passed as second argument, is gonna get stored in the "email" variable on the
+   * callback function. 
+   */
   console.log('New email', email);
+  /** This is gonna print inside the web developer console every time the client hears this event coming across the pipeline.  */
+});
+
+socket.on('newMessage', function (message) {
+  console.log('got new message', message);
 });

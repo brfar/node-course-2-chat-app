@@ -20,7 +20,13 @@ io.on('connection', socket => {
     createdAt: 123
   });
 
-  socket.on('createEmail', (newEmail) => {
+  socket.emit('newMessage', {
+    from: 'john',
+    text: 'yo',
+    createdAt: 123123
+  });
+
+  socket.on('createEmail', newEmail => {
     console.log('createEmail', newEmail);
   });
 
