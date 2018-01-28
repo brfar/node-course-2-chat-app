@@ -128,3 +128,33 @@ socket.on('createEmail', newEmail => {
 
 ***
 
+Currently, all we do is log the data to the screen. Instead of just logging it, we want to emit a new event to everybody. So every single connected user gets the message that was sent from a specific user. In order to do that, we're gonna use the method below:
+
+```javascript
+io.emit('newMessage', {
+  from: message.from,
+  text: message.text,
+  createdAt: new Date().getTime()
+});
+```
+
+`socket.emit` emits an event to a single connection, `io.emit` emits an event to every single connection. Here we're emitting the event `newMessage` in the first argument and in the second argument is the data you wanna send. We're getting a `from` and `text` properties from the client on index.js so we just need to pass them along 
+
+If we go to the dev tools and run for eg `socket.emit('createMessage, {from: 'Andrew', text: 'This should work!'});` this event is gonna be emmit from the browser, it's gonna go to the server, which is going to send the message to every connected user, including the user who sent the message. 
+
+***
+
+Some events you wanna send to everybody, but other events should only go to other people. So if user1 emits an event, it shouldn't go back to user1. It should only go to user2, user3 etc. In order to get that done we're gonna look at a different way to emit events in the server. 
+
+```javascript
+socket.broadcast.emit('newMessage', {
+  from: 'Admin',
+  text: 'New user joined',
+  createdAt: new Date().getTime()
+});
+```
+To broadcast a message we have to specify the individual socket. This lets the Socket.io library know which user shouldn't get the event. The code above is gonna send the event to everybody but this socket. 
+
+***
+
+
