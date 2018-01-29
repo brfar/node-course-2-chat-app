@@ -140,7 +140,7 @@ io.emit('newMessage', {
 
 `socket.emit` emits an event to a single connection, `io.emit` emits an event to every single connection. Here we're emitting the event `newMessage` in the first argument and in the second argument is the data you wanna send. We're getting a `from` and `text` properties from the client on index.js so we just need to pass them along 
 
-If we go to the dev tools and run for eg `socket.emit('createMessage, {from: 'Andrew', text: 'This should work!'});` this event is gonna be emmit from the browser, it's gonna go to the server, which is going to send the message to every connected user, including the user who sent the message. 
+If we go to the dev tools and run for eg `socket.emit('createMessage, {from: 'Andrew', text: 'This should work!'});` this event is gonna be emit from the browser, it's gonna go to the server, which is going to send the message to every connected user, including the user who sent the message. 
 
 ***
 
