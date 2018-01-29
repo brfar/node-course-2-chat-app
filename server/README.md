@@ -157,4 +157,36 @@ To broadcast a message we have to specify the individual socket. This lets the S
 
 ***
 
+### Event Acknowledgements
+
+We're gonna add a acknowledgment for `createMessage`. If the client emits a valid request, we're gonna acknowledge that sending back no error message. If the data sent form client to server is invalid, we're gonna acknowledge it, sending back the errors so the client knows exactly what to do to send a valid request.
+
+Setting up acknowledgments isn't bad if you already have a listener in place. All you gotta do is make a quick change to the listener and the emitter and everything will work:
+
+```javascript
+// on the client
+socket.emit('createMessage', {
+  from: 'Frank ',
+  text: 'Hi'
+}, function (data) {
+  console.log('got it', data); // -> got it This is from the server
+});
+```
+
+The third argument, the callback function, is gonna fire when the acknowledgment arrives at the client and we can do anything we like. Here we're just printing "got it".
+
+On the server, we're gonna add a second argument to the callback called `callback` and we can call it anywhere to acknowledge that we got the request:
+
+```javascript
+// on the server
+socket.on('createMessage', (message, callback) => {
+  console.log('createMessage', message);
+  io.emit('newMessage', generateMessage(message.from, message.text));
+  callback('This is from the server');
+});
+```
+
+When we call `callback()` it's gonna send an event back to the front end and it's gonna call the function on the first example. 
+
+***
 

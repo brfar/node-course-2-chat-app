@@ -66,4 +66,37 @@ This is gonna print inside the web developer console every time the client hears
 
 *** 
 
+### jQuery
 
+`jQuery` takes as argument whatever it is you wanna select, here is `#message-form` and then we add a event listener by calling `.on()` passing the event name `submit` and a function:
+
+```javascript
+jQuery('#message-form').on('submit', function (e) {
+  e.preventDefault();
+
+  socket.emit('createMessage', {
+    from: 'User',
+    text: jQuery('[name=message]').val()
+  }, function () {
+
+  });
+});
+```
+
+The function is gonna fire when a user tries to submit the form. Unlike the Socket.io event listeners, this function gets one argument `e` and we are gonna need to access this in order to override the default behavior that when you click the submit button, html by default refreshes the page. `e.preventDefault()` does exactly that. 
+
+After that, we're emitting the 'createMessage' event, where the `text` property is jQuery selecting the "name=message" input (check HTML) and using `.val` to get its value. The empty callblack function is responsible for the acknowledgment. 
+
+***
+
+Here we're using jQuery differently: instead of using it to select something, we're creating something (the `<li>` tags) storing it to a variable so we modify (add li's) later. We're using the `.text()` method to set the text property. Then we select that element `#messages` we just created, then we call `.append` to render it to the DOM:
+
+```javascript
+socket.on('newMessage', function (message) {
+  console.log('newMessage', message);
+  var li = jQuery('<li></li>');
+  li.text(`${message.from}: ${message.text}`);
+
+  jQuery('#messages').append(li);
+});
+```
