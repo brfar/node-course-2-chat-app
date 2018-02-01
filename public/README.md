@@ -100,3 +100,48 @@ socket.on('newMessage', function (message) {
   jQuery('#messages').append(li);
 });
 ```
+
+***
+
+### Geolocation
+
+```javascript
+var locationButton = jQuery('#send-location');
+locationButton.on('click', function () {
+  if (!navigator.geolocation) {
+    return alert('Geolocation not supported by your browser.');
+  }
+
+  navigator.geolocation.getCurrentPosition(function (position) {
+    socket.emit('createLocationMessage', {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    });
+  }, function () {
+    alert('Unable to fetch location.');
+  });
+});
+```
+
+First `locationButton` is gonna store the selector using jQuery. We're gonna be using it a few times, so storing it in a variable saves the need to keep making the same call again. <br>
+Then we're adding a click event. We wanna do something when that button gets clicked. The `if` statement checks whether or not the browser supports geolocation. <br>
+`.getCurrentPosition` is what actually fetches a user's position. It's a fuction that starts the process. It's going to actively get the coordinates for the user. This method takes 2 functions: the sucess function and the failure function. 
+The `position` variable passed as argument to the callback function is object that holds properties about the user location like the coordinates and timestamp. 
+The we emit a brand new event, `createLocationMessage` which takes the latitude and longitude that accessible from the `position` object. Now that we have everything we can go ahead and listen for this event over in server.js
+
+***
+Add an event listener for `newLocationMessage`:
+
+```javascript
+socket.on('newLocationMessage', function (message) {
+  var li = jQuery('<li></li>');
+  var a = jQuery('<a target="_blank">My current location</a>');
+
+  li.text(`${message.from}: `);
+  a.attr('href', message.url);
+  li.append(a);
+  jQuery('#messages').append(li);
+});
+```
+`newLocationMessage` is the event we wanna listen. What happens in the callback function is the DOM elements we wanna spit out to the users. 
+zzz

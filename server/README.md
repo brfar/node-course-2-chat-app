@@ -190,3 +190,22 @@ When we call `callback()` it's gonna send an event back to the front end and it'
 
 ***
 
+### Geolocation
+
+The geolocation API is available in the client-side JavaSciprt and it's very well supported. 
+
+```javascript
+socket.on('createLocationMessage', (coords) => {
+  io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+});
+////// message.js
+var generateLocationMessage = (from, latitude, longitude) => {
+  return {
+    from,
+    url: `https://www.google.com/maps?q=${latitude},${longitude}`,
+    createdAt: new Date().getTime()
+  };
+};
+```
+
+Here we listen to the event created on index.js for `createLocationMessage` we can have access to properties like latitute and longitude because they're available on the emitted event com *index.js*. 

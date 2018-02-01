@@ -36,7 +36,6 @@ socket.on('newLocationMessage', function (message) {
 });
 
 jQuery('#message-form').on('submit', function (e) {
-  console.log(e);
   e.preventDefault();
 
   socket.emit('createMessage', {
@@ -54,6 +53,7 @@ locationButton.on('click', function () {
   }
 
   navigator.geolocation.getCurrentPosition(function (position) {
+    console.log(position);
     socket.emit('createLocationMessage', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
